@@ -167,7 +167,9 @@ class BB {
     return id;
   }
 
-  static Future<bool> open(String url, {String regionCode = 'FR'}) async {
+  static Future<bool> open(String url,
+      {String regionCode = 'FR',
+      LaunchMode mode = LaunchMode.inAppWebView}) async {
     if (url.contains('tel:')) {
       try {
         final util = PhoneNumberUtil();
@@ -178,7 +180,7 @@ class BB {
       url = url.trim().replaceAll(' ', '');
     }
     if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
+      await launchUrl(Uri.parse(url), mode: mode);
       return true;
     }
     return false;
