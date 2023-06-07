@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'utils.dart';
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class GeoPoint {
@@ -21,24 +23,24 @@ class GeoPoint {
   static GeoPoint fromLatLng(LatLng ll) =>
       GeoPoint(lat: ll.latitude, lng: ll.longitude);
   static GeoPoint fromJson(Map<String, dynamic> json) {
-    double? lng = 0;
-    double? lat = 0;
+    double lng = 0;
+    double lat = 0;
     if (json.containsKey('type') && json['type'] == 'Point') {
-      lng = json['coordinates'][0];
-      lat = json['coordinates'][1];
-      return GeoPoint(lng: lng!, lat: lat!);
+      lng = parseJsonDouble(json['coordinates'][0]);
+      lat = parseJsonDouble(json['coordinates'][1]);
+      return GeoPoint(lng: lng, lat: lat);
     }
     if (json.containsKey('lat')) {
-      lat = json['lat'];
+      lat = parseJsonDouble(json['lat']);
     } else if (json.containsKey('latitude')) {
-      lat = json['latitude'];
+      lat = parseJsonDouble(json['latitude']);
     }
     if (json.containsKey('lng')) {
-      lng = json['lng'];
+      lng = parseJsonDouble(json['lng']);
     } else if (json.containsKey('longitude')) {
-      lng = json['longitude'];
+      lng = parseJsonDouble(json['longitude']);
     }
-    return GeoPoint(lng: lng!, lat: lat!);
+    return GeoPoint(lng: lng, lat: lat);
   }
 
   Map<String, dynamic> toJson() => {'lat': lat, 'lng': lng};
