@@ -15,7 +15,6 @@ dependencies:
 
   google_maps_flutter: any
   url_launcher: any
-  phone_number: any
   shared_preferences: any
   quiver: any
   diacritic: any

@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' as wid;
 
 import 'package:flutter/painting.dart' as painting;
-import 'package:phone_number/phone_number.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -170,15 +169,6 @@ class BB {
   static Future<bool> open(String url,
       {String regionCode = 'FR',
       LaunchMode mode = LaunchMode.inAppWebView}) async {
-    if (url.contains('tel:')) {
-      try {
-        final util = PhoneNumberUtil();
-        url = 'tel:${await util.format(url.split("tel:")[1], regionCode)}';
-      } catch (error) {
-        //Debug.info(error);
-      }
-      url = url.trim().replaceAll(' ', '');
-    }
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url), mode: mode);
       return true;
