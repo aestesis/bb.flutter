@@ -44,7 +44,7 @@ class Event<T> {
     return _ctrl.stream;
   }
 
-  StreamSubscription listen(void Function(T event)? onData,
+  StreamSubscription<T> listen(void Function(T event)? onData,
           {Function? onError, void Function()? onDone, bool? cancelOnError}) =>
       _ctrl.stream.listen(onData,
           onError: onError, onDone: onDone, cancelOnError: cancelOnError);
