@@ -42,8 +42,7 @@ class Expandable extends StatefulWidget {
       this.child,
       this.duration = const Duration(milliseconds: 500),
       this.alwaysInTree = false,
-      Key? key})
-      : super(key: key);
+      super.key});
   @override
   ExpandableState createState() => ExpandableState();
 }
