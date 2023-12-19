@@ -213,7 +213,7 @@ class Range<T extends num> {
   @override
   String toString() => 'Range<${T.runtimeType}>(min:$min, max:$max)';
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       other is Range<T> && min == other.min && max == other.max;
   @override
   int get hashCode => min.hashCode & max.hashCode;
