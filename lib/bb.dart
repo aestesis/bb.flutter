@@ -137,14 +137,14 @@ class BB {
 
   static List<T> separator<T>(
       {required Iterable<T> items,
-      T Function()? separatorBuilder,
+      required T Function() separatorBuilder,
       bool before = false,
       bool after = false}) {
     final List<T> l = [];
-    if (before && items.isNotEmpty) l.add(separatorBuilder!());
+    if (before && items.isNotEmpty) l.add(separatorBuilder());
     for (final s in items) {
       l.add(s);
-      if (s != items.last || after) l.add(separatorBuilder!());
+      if (s != items.last || after) l.add(separatorBuilder());
     }
     return l;
   }
@@ -221,3 +221,5 @@ class Range<T extends num> {
   static Range<double> get infinity =>
       const Range<double>(min: double.negativeInfinity, max: double.infinity);
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
