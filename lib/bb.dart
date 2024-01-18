@@ -142,9 +142,13 @@ class BB {
       bool after = false}) {
     final List<T> l = [];
     if (before && items.isNotEmpty) l.add(separatorBuilder());
+    int i = items.length;
     for (final s in items) {
+      i--;
       l.add(s);
-      if (s != items.last || after) l.add(separatorBuilder());
+      if (i > 0 || after) {
+        l.add(separatorBuilder());
+      }
     }
     return l;
   }
