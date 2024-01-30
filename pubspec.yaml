@@ -13,7 +13,6 @@ dependencies:
   collection: any
   intl: any
 
-  google_maps_flutter: any
   url_launcher: any
   shared_preferences: any
   quiver: any

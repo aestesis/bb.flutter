@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'utils.dart';
 
@@ -14,14 +13,18 @@ class GeoPoint {
   double get lat => offset.dy;
   double get latitude => offset.dy;
   GeoCell get cell => GeoCell.fromPoint(this);
+  /*
   LatLng get latLng => LatLng(lat, lng);
   set latLng(LatLng ll) {
     offset = Offset(ll.longitude, ll.latitude);
   }
+  */
 
   GeoPoint({double lng = 0, double lat = 0}) : offset = Offset(lng, lat);
+  /*
   static GeoPoint fromLatLng(LatLng ll) =>
       GeoPoint(lat: ll.latitude, lng: ll.longitude);
+    */
   static GeoPoint fromJson(Map<String, dynamic> json) {
     double lng = 0;
     double lat = 0;
@@ -83,12 +86,14 @@ class GeoRect extends Rect {
   GeoRect.fromRect(Rect r) : super.fromLTRB(r.left, r.top, r.right, r.bottom);
   GeoRect.fromPoints(GeoPoint sw, GeoPoint ne)
       : super.fromLTRB(sw.lng, sw.lat, ne.lng, ne.lat);
+  /*
   GeoRect.fromLatLngBounds(LatLngBounds b)
       : super.fromLTRB(b.southwest.longitude, b.southwest.latitude,
             b.northeast.longitude, b.northeast.latitude);
   LatLngBounds get latLngBounds {
     return LatLngBounds(northeast: ne.latLng, southwest: sw.latLng);
   }
+  */
 
   static GeoRect get empty {
     return GeoRect();
