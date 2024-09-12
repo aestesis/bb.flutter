@@ -106,26 +106,26 @@ extension HexColor on Color {
   }
 
   String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
-      '${alpha.toRadixString(16).padLeft(2, '0')}'
-      '${red.toRadixString(16).padLeft(2, '0')}'
-      '${green.toRadixString(16).padLeft(2, '0')}'
-      '${blue.toRadixString(16).padLeft(2, '0')}';
+      '${a8.toRadixString(16).padLeft(2, '0')}'
+      '${r8.toRadixString(16).padLeft(2, '0')}'
+      '${g8.toRadixString(16).padLeft(2, '0')}'
+      '${b8.toRadixString(16).padLeft(2, '0')}';
 
-  Color operator *(Color color) => Color.fromARGB(
-        (alpha * color.alpha / 255).round(),
-        (red * color.red / 255).round(),
-        (green * color.green / 255).round(),
-        (blue * color.blue / 255).round(),
+  Color operator *(Color color) => Color.from(
+        alpha: a * color.a,
+        red: r * color.r,
+        green: g * color.g,
+        blue: color.b,
       );
 
-  Color operator +(Color color) => Color.fromARGB(
-        alpha + color.alpha,
-        red + color.red,
-        green + color.green,
-        blue + color.blue,
+  Color operator +(Color color) => Color.from(
+        alpha: a + color.a,
+        red: r + color.r,
+        green: g + color.g,
+        blue: b + color.b,
       );
 
-  Color mulOpacity(double opacity) => withOpacity(opacity * this.opacity);
+  Color mulOpacity(double opacity) => withValues(alpha: opacity * a);
 
   Color rgbLerp(Color other, double t) => Color.lerp(this, other, t) ?? this;
   Color hsvLerp(Color other, double t) =>
@@ -136,6 +136,11 @@ extension HexColor on Color {
       HSLColor.lerp(HSLColor.fromColor(this), HSLColor.fromColor(other), t)
           ?.toColor() ??
       this;
+
+  int get a8 => (a * 255).toInt();
+  int get r8 => (r * 255).toInt();
+  int get g8 => (g * 255).toInt();
+  int get b8 => (b * 255).toInt();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

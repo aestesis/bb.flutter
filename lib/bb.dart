@@ -51,15 +51,15 @@ class BB {
   }
 
   static Color color(Color c, {double multiply = 1, double add = 0}) {
-    double r = c.red.toDouble() / 255 * multiply + add;
-    double g = c.green.toDouble() / 255 * multiply + add;
-    double b = c.blue.toDouble() / 255 * multiply + add;
-    double a = c.alpha.toDouble() / 255;
-    return Color.fromARGB(
-        max(min((a * 255).toInt(), 255), 0),
-        max(min((r * 255).toInt(), 255), 0),
-        max(min((g * 255).toInt(), 255), 0),
-        max(min((b * 255).toInt(), 255), 0));
+    double r = c.r * multiply + add;
+    double g = c.g * multiply + add;
+    double b = c.b * multiply + add;
+    double a = c.a;
+    return Color.from(
+        alpha: max(min(a, 1), 0),
+        red: max(min(r, 1), 0),
+        green: max(min(g, 1), 0),
+        blue: max(min(b, 1), 0));
   }
 
   static Map<String, dynamic> merge(
