@@ -1,5 +1,3 @@
-library bb;
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
@@ -12,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' as wid;
 
 import 'package:flutter/painting.dart' as painting;
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,6 +33,9 @@ class BB {
     }
     return id;
   }
+
+  static double get time =>
+      DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
 
   static dynamic deepCopy(dynamic json) {
     if (json is num || json is String) return json;
@@ -201,6 +203,16 @@ class BB {
     if (content != null) return jsonDecode(content);
     throw ArgumentError('key $key not found');
   }
+
+  static Future<ByteData> loadData(String asset) async {
+    return await rootBundle.load(asset);
+  }
+
+  static Widget svg(String asset, {Color? color}) => SvgPicture.asset(
+        asset,
+        colorFilter:
+            color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,5 +237,118 @@ class Range<T extends num> {
   static Range<double> get infinity =>
       const Range<double>(min: double.negativeInfinity, max: double.infinity);
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+final Uint8List kTransparentImage = Uint8List.fromList(<int>[
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0x00,
+  0x00,
+  0x00,
+  0x0D,
+  0x49,
+  0x48,
+  0x44,
+  0x52,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x08,
+  0x06,
+  0x00,
+  0x00,
+  0x00,
+  0x1F,
+  0x15,
+  0xC4,
+  0x89,
+  0x00,
+  0x00,
+  0x00,
+  0x0A,
+  0x49,
+  0x44,
+  0x41,
+  0x54,
+  0x78,
+  0x9C,
+  0x63,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x05,
+  0x00,
+  0x01,
+  0x0D,
+  0x0A,
+  0x2D,
+  0xB4,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x49,
+  0x45,
+  0x4E,
+  0x44,
+  0xAE,
+  0x42,
+  0x60,
+  0x82,
+]);
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+extension RectExt on Rect {
+  Rect crop({double aspect = 1}) {
+    final r = width / height;
+    if (aspect == r) {
+      return this;
+    }
+    if (aspect > r) {
+      return Rect.fromCenter(
+        center: center,
+        width: width,
+        height: width / aspect,
+      );
+    }
+    return Rect.fromCenter(
+      center: center,
+      width: height * aspect,
+      height: height,
+    );
+  }
+
+  Rect reduce({double margin = 0}) {
+    return Rect.fromLTRB(
+      left + margin,
+      top + margin,
+      right - margin,
+      bottom - margin,
+    );
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+extension StringExtension on String {
+  String capitalize() {
+    if (isEmpty) return '';
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
