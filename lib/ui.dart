@@ -9,10 +9,10 @@ ColorScheme colorScheme(BuildContext context) => Theme.of(context).colorScheme;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 class SliverChildBuilderSeparatedDelegate extends SliverChildBuilderDelegate {
   SliverChildBuilderSeparatedDelegate(
-      {int childCount = 0,
+      {int itemCount = 0,
       bool after = false,
       bool before = false,
-      required Widget Function(BuildContext context, int index) builder,
+      required Widget Function(BuildContext context, int index) itemBuilder,
       Widget Function(BuildContext context, int index)? separatorBuilder})
       : super((context, index) {
           final ib = before ? 1 : 0;
@@ -22,12 +22,12 @@ class SliverChildBuilderSeparatedDelegate extends SliverChildBuilderDelegate {
                 ? separatorBuilder(context, itemIndex)
                 : Container();
           } else {
-            return builder(context, itemIndex);
+            return itemBuilder(context, itemIndex);
           }
         },
-            childCount: childCount == 0
+            childCount: itemCount == 0
                 ? 0
-                : (childCount * 2 - 1 + (before ? 1 : 0) + (after ? 1 : 0)));
+                : (itemCount * 2 - 1 + (before ? 1 : 0) + (after ? 1 : 0)));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
