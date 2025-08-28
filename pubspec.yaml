@@ -14,7 +14,6 @@ dependencies:
 
   url_launcher: any
   shared_preferences: any
-  quiver: any
   diacritic: any
   flutter_color: any
   flutter_svg: any
