@@ -46,6 +46,14 @@ class BB {
   static double get time =>
       DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
 
+  static Future<void> sleep(Duration duration) {
+    final c = Completer();
+    Timer(duration, () {
+      c.complete();
+    });
+    return c.future;
+  }
+
   static dynamic deepCopy(dynamic json) {
     if (json is num || json is String) return json;
     if (json is List<dynamic>) return json.map((j) => BB.deepCopy(j));
@@ -246,6 +254,7 @@ class Range<T extends num> {
   static Range<double> get infinity =>
       const Range<double>(min: double.negativeInfinity, max: double.infinity);
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 final Uint8List kTransparentImage = Uint8List.fromList(<int>[
