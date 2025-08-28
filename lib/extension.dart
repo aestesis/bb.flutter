@@ -167,9 +167,8 @@ extension StringExtension on String {
     }
   }
 
-  bool isHttpUri() => startsWith("http://") || startsWith("https://");
-
-  bool isFileUri() => startsWith("file://");
+  bool get isUri => uri != null;
+  Uri? get uri => Uri.tryParse(this); 
 
   bool equalsIgnoreCase(String? other) {
     return (other != null) &&
