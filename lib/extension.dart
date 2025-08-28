@@ -135,6 +135,8 @@ extension StringExtension on String {
     return lowercase ? s.toLowerCase() : s;
   }
 
+  bool isFileExt(String ext) => fileExt() == ext;
+
   String filename({String? pathSeparator}) {
     final separator = pathSeparator ?? Platform.pathSeparator;
     return afterTokenLast(separator);
