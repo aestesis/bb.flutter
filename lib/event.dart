@@ -16,6 +16,12 @@ class EventValue<T> extends Event<T> {
 
   @override
   int get hashCode => _value.hashCode;
+
+  T get() => _value;
+  void set(T v) {
+    _value = v;
+    fire(v);
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
