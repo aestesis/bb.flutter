@@ -11,11 +11,7 @@ class EventValue<T> extends Event<T> {
     fire(v);
   }
 
-  @override
-  bool operator ==(Object other) => other is T && other == _value;
-
-  @override
-  int get hashCode => _value.hashCode;
+  bool equal(T v) => v == _value;
 
   T get() => _value;
   void set(T v) {
