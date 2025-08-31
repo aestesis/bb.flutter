@@ -10,6 +10,12 @@ class EventValue<T> extends Event<T> {
     _value = v;
     fire(v);
   }
+
+  @override
+  bool operator ==(Object other) => other is T && other == _value;
+
+  @override
+  int get hashCode => _value.hashCode;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
