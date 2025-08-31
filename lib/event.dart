@@ -11,7 +11,7 @@ class EventValue<T> extends Event<T> {
     fire(v);
   }
 
-  bool equal(T v) => v == _value;
+  bool equals(T v) => v == _value;
 
   T get() => _value;
   void set(T v) {
