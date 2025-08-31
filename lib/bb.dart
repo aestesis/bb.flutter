@@ -69,18 +69,6 @@ class BB {
     return (const DeepCollectionEquality()).equals(a, b);
   }
 
-  static Color color(Color c, {double multiply = 1, double add = 0}) {
-    double r = c.r * multiply + add;
-    double g = c.g * multiply + add;
-    double b = c.b * multiply + add;
-    double a = c.a;
-    return Color.from(
-        alpha: max(min(a, 1), 0),
-        red: max(min(r, 1), 0),
-        green: max(min(g, 1), 0),
-        blue: max(min(b, 1), 0));
-  }
-
   static Map<String, dynamic> merge(
       Map<String, dynamic> a, Map<String, dynamic> b) {
     Map<String, dynamic> r = {};

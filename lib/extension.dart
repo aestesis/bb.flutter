@@ -168,7 +168,7 @@ extension StringExtension on String {
   }
 
   bool get isUri => uri != null;
-  Uri? get uri => Uri.tryParse(this); 
+  Uri? get uri => Uri.tryParse(this);
 
   bool equalsIgnoreCase(String? other) {
     return (other != null) &&
@@ -278,6 +278,18 @@ extension HexColor on Color {
   int get r8 => (r * 255).toInt();
   int get g8 => (g * 255).toInt();
   int get b8 => (b * 255).toInt();
+
+  Color mul({double factor = 1, double offset = 0}) {
+    double r = this.r * factor + offset;
+    double g = this.g * factor + offset;
+    double b = this.b * factor + offset;
+    double a = this.a;
+    return Color.from(
+        alpha: max(min(a, 1), 0),
+        red: max(min(r, 1), 0),
+        green: max(min(g, 1), 0),
+        blue: max(min(b, 1), 0));
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
