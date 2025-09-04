@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 class Debug {
   static String prefix = '';
   static bool Function(String error)? onError;
-  static String _log = '';
+  static StringBuffer _log = StringBuffer();
   static void _print(String text) => debugPrint('$prefix$text');
   static void print(Object? object) {
-    _log += '${object.toString()}\r\n';
+    _log.write('${object.toString()}\r\n');
     int defaultPrintLength = 700;
     if (object == null || object.toString().length <= defaultPrintLength) {
       _print(object.toString());
@@ -53,7 +53,7 @@ class Debug {
       print(object);
     }
     try {
-      if (onError != null && onError!(_log)) _log = '';
+      if (onError != null && onError!(_log.toString())) _log.clear();
     } catch (error) {
       // do nothing
     }
