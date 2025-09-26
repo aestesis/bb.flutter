@@ -202,6 +202,13 @@ class BB {
     await prefs.setString(key, jsonEncode(json));
   }
 
+  static Future<Iterable<String>> sharedKeys({String? prefix}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys();
+    if (prefix == null) return keys;
+    return keys.where((k) => k.startsWith(prefix));
+  }
+
   static Future<Map<String, dynamic>> sharedRead(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var content = prefs.getString(key);
