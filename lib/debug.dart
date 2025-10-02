@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Debug {
   static String prefix = '';
   static bool Function(String error)? onError;
-  static StringBuffer _log = StringBuffer();
+  static final _log = StringBuffer();
   static void _print(String text) => debugPrint('$prefix$text');
   static void print(Object? object) {
     _log.write('${object.toString()}\r\n');

@@ -11,6 +11,9 @@ dependencies:
 
   collection: any
   intl: any
+  path_provider: any
+  crypto: any
+
 
   url_launcher: any
   shared_preferences: any

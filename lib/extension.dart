@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:diacritic/diacritic.dart' as dia;
 import 'package:flutter/material.dart';
@@ -324,5 +326,26 @@ extension RectExt on Rect {
   }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+extension ImageProviderExt on ImageProvider {
+  Future<ui.Image> get uiImage async {
+    final completer = Completer<dynamic>();
+    resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener((ImageInfo info, bool _) => completer.complete(info)),
+    );
+    return (await completer.future as ImageInfo).image;
+  }
+
+  Future<Uint8List> get pngBytes async {
+    final image = await uiImage;
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    if (byteData == null) {
+      throw Exception('error');
+    }
+    final Uint8List pngBytes = byteData.buffer.asUint8List();
+    return pngBytes;
+  }
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

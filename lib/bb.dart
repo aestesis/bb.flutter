@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 import 'dart:ui' as ui;
 import 'package:collection/collection.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,8 +13,11 @@ import 'package:flutter/widgets.dart' as wid;
 
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_svg/svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'extension.dart';
 
 export 'debug.dart';
 export 'event.dart';
@@ -141,6 +146,20 @@ class BB {
     var picture = recorder.endRecording();
     return await picture.toImage(size.width.round(), size.height.round());
   }
+
+  static Future<String> saveImage({required List<int> data, int width = 256}) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final key = md5.convert(data).toString();
+    final image = ResizeImage(
+      MemoryImage(Uint8List.fromList(data)),
+      width: width,
+    );
+    final bytes = await image.pngBytes;
+    final file = File('$directory/$key.png');
+    await file.writeAsBytes(bytes);
+    return file.path;
+  }
+
 
   static List<T> separator<T>(
       {required Iterable<T> items,
