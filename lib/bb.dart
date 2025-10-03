@@ -147,19 +147,22 @@ class BB {
     return await picture.toImage(size.width.round(), size.height.round());
   }
 
-  static Future<String> saveImage({required List<int> data, int width = 256}) async {
+  static Future<String> saveImage(
+      {required List<int> data, int width = 256}) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
+    final file = File('$directory/$key.png');
+    if (await file.exists()) {
+      return file.path;
+    }
     final image = ResizeImage(
       MemoryImage(Uint8List.fromList(data)),
       width: width,
     );
     final bytes = await image.pngBytes;
-    final file = File('$directory/$key.png');
     await file.writeAsBytes(bytes);
     return file.path;
   }
-
 
   static List<T> separator<T>(
       {required Iterable<T> items,
