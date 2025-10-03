@@ -149,7 +149,7 @@ class BB {
 
   static Future<String> saveImage(
       {required List<int> data, int width = 256}) async {
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getApplicationCacheDirectory();
     final key = md5.convert(data).toString();
     final file = File('$directory/$key.png');
     if (await file.exists()) {
