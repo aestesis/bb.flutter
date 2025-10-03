@@ -151,7 +151,7 @@ class BB {
       {required List<int> data, int width = 256}) async {
     final directory = await getApplicationCacheDirectory();
     final key = md5.convert(data).toString();
-    final file = File('$directory/$key.png');
+    final file = File('${directory.path}/$key.png');
     if (await file.exists()) {
       return file.path;
     }
