@@ -214,6 +214,19 @@ class BB {
     return await BB.open('https://$url');
   }
 
+  static Future<Iterable<String>> sharedKeys({String? prefix}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final keys = prefs.getKeys();
+    if (prefix == null) return keys;
+    return keys.where((k) => k.startsWith(prefix));
+  }
+
+  static Future<bool> sharedContains(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey(key);
+  }
+
+
   static Future<void> sharedRemove(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(key);
@@ -222,13 +235,6 @@ class BB {
   static Future<void> sharedWrite(String key, Map<String, dynamic> json) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(key, jsonEncode(json));
-  }
-
-  static Future<Iterable<String>> sharedKeys({String? prefix}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final keys = prefs.getKeys();
-    if (prefix == null) return keys;
-    return keys.where((k) => k.startsWith(prefix));
   }
 
   static Future<Map<String, dynamic>> sharedRead(String key) async {
