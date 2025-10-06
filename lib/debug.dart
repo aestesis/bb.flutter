@@ -1,10 +1,14 @@
-import 'package:flutter/material.dart';
+import "package:ansi_colorizer/ansi_colorizer.dart";
+import 'dart:developer' as developer;
 
 class Debug {
+  static const _errorColor = AnsiColorizer(foreground: Ansi3BitColors.red);
+  static const _warningColor =
+      AnsiColorizer(foreground: Ansi3BitColors.magenta);
   static String prefix = '';
   static bool Function(String error)? onError;
   static final _log = StringBuffer();
-  static void _print(String text) => debugPrint('$prefix$text');
+  static void _print(String text) => developer.log('$prefix$text');
   static void print(Object? object) {
     _log.write('${object.toString()}\r\n');
     int defaultPrintLength = 700;
@@ -37,7 +41,7 @@ class Debug {
 
   static void warning(Object object) {
     if (object is Error) {
-      print(object.toString());
+      print(_warningColor(object.toString()));
       print(object.stackTrace);
     } else {
       print(object);
@@ -47,7 +51,7 @@ class Debug {
   static void error(Object object) {
     print('--------------------------------------------');
     if (object is Error) {
-      print(object.toString());
+      print(_errorColor(object.toString()));
       print(object.stackTrace);
     } else {
       print(object);

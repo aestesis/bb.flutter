@@ -20,6 +20,7 @@ dependencies:
   diacritic: any
   flutter_color: any
   flutter_svg: any
+  ansi_colorizer: any
   
 dev_dependencies:
   flutter_test:
