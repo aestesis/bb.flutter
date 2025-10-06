@@ -14,7 +14,6 @@ import 'package:flutter/widgets.dart' as wid;
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_svg/svg.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'extension.dart';
@@ -27,6 +26,7 @@ export 'json.dart';
 export 'signal.dart';
 export 'ui.dart';
 export 'utils.dart';
+export 'store.dart';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,7 +149,7 @@ class BB {
 
   static Future<String> saveImage(
       {required List<int> data, int width = 256}) async {
-    final directory = await getApplicationCacheDirectory();
+    final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
     final file = File('${directory.path}/$key.png');
     if (await file.exists()) {
@@ -212,36 +212,6 @@ class BB {
   static Future<bool> openHttp(String url) async {
     if (url.contains('://')) return await BB.open(url);
     return await BB.open('https://$url');
-  }
-
-  static Future<Iterable<String>> sharedKeys({String? prefix}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final keys = prefs.getKeys();
-    if (prefix == null) return keys;
-    return keys.where((k) => k.startsWith(prefix));
-  }
-
-  static Future<bool> sharedContains(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey(key);
-  }
-
-
-  static Future<void> sharedRemove(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove(key);
-  }
-
-  static Future<void> sharedWrite(String key, Map<String, dynamic> json) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(key, jsonEncode(json));
-  }
-
-  static Future<Map<String, dynamic>> sharedRead(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var content = prefs.getString(key);
-    if (content != null) return jsonDecode(content);
-    throw ArgumentError('key $key not found');
   }
 
   static Future<ByteData> loadData(String asset) async {
