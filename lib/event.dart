@@ -6,18 +6,17 @@ class EventValue<T> extends Event<T> {
   T _value;
   EventValue(T value) : _value = value;
   T get value => _value;
-  set value(T v) {
-    _value = v;
-    fire(v);
-  }
-
+  set value(T v) => set(v);
+  T get() => _value;
   bool equals(T v) => v == _value;
+  void set(T v) {
+    if (_value != v) {
+      _value = v;
+      fire(v);
+    }
+  }
 
   T get() => _value;
-  void set(T v) {
-    _value = v;
-    fire(v);
-  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
