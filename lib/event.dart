@@ -8,7 +8,6 @@ class EventValue<T> extends Event<T> {
   T get value => _value;
   set value(T v) => set(v);
   T get() => _value;
-  bool equals(T v) => v == _value;
   void set(T v) {
     if (_value != v) {
       _value = v;
@@ -16,7 +15,7 @@ class EventValue<T> extends Event<T> {
     }
   }
 
-  T get() => _value;
+  bool equals(T v) => v == _value;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
