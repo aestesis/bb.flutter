@@ -1,6 +1,10 @@
-import "package:ansi_colorizer/ansi_colorizer.dart";
 import 'dart:developer' as developer;
 
+import 'package:ansi_colorizer/ansi_colorizer.dart';
+import 'package:flutter/foundation.dart';
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Debug {
   static const _errorColor = AnsiColorizer(foreground: Ansi3BitColors.red);
   static const _warningColor =
@@ -8,7 +12,8 @@ class Debug {
   static String prefix = '';
   static bool Function(String error)? onError;
   static final _log = StringBuffer();
-  static void _print(String text) => developer.log('$prefix$text');
+  static void _print(String text) =>
+      kDebugMode ? developer.log('$prefix$text') : debugPrint('$prefix$text');
   static void print(Object? object) {
     _log.write('${object.toString()}\r\n');
     int defaultPrintLength = 700;
@@ -72,3 +77,5 @@ class Debug {
     }
   }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
