@@ -20,6 +20,43 @@ class EventValue<T> extends Event<T> {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+class EventSet<T> extends Event<Set<T>> {
+  // TODO: add more Set<T> compatibility [addAll(..) , etc..]
+  Set<T> _value;
+  EventSet(Set<T> value) : _value = value;
+  Set<T> get value => _value;
+  set value(Set<T> v) => set(v);
+  bool contains(T v) => _value.contains(v);
+  Set<T> get() => _value;
+  void set(Set<T> v) {
+    _value = v;
+    fire(v);
+  }
+
+  void add(T v) {
+    if (!_value.contains(v)) {
+      _value.add(v);
+      fire(_value);
+    }
+  }
+
+  void remove(T v) {
+    if (_value.contains(v)) {
+      _value.remove(v);
+      fire(_value);
+    }
+  }
+
+  void clear() {
+    if (_value.isNotEmpty) {
+      _value.clear();
+      fire(_value);
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Event<T> {
   final _ctrl = StreamController<T>.broadcast();
   final List<void Function(T)> _onces = [];
