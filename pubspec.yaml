@@ -21,6 +21,7 @@ dependencies:
   flutter_color: any
   flutter_svg: any
   ansi_colorizer: any
+  stack_trace: any
   
 dev_dependencies:
   flutter_test:

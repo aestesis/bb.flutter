@@ -2,13 +2,17 @@ import 'dart:developer' as developer;
 
 import 'package:ansi_colorizer/ansi_colorizer.dart';
 import 'package:flutter/foundation.dart';
+import 'package:stack_trace/stack_trace.dart';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Debug {
-  static const _errorColor = AnsiColorizer(foreground: Ansi3BitColors.red);
-  static const _warningColor =
-      AnsiColorizer(foreground: Ansi3BitColors.magenta);
+  static const _errorColor = kDebugMode
+      ? AnsiColorizer(foreground: Ansi3BitColors.brightRed)
+      : AnsiColorizer();
+  static const _warningColor = kDebugMode
+      ? AnsiColorizer(foreground: Ansi3BitColors.brightMagenta)
+      : AnsiColorizer();
   static String prefix = '';
   static bool Function(String error)? onError;
   static final _log = StringBuffer();
@@ -36,30 +40,48 @@ class Debug {
   }
 
   static void info(Object object) {
+    final f = Trace.from(StackTrace.current).frames;
+    String l = '';
+    try {
+      l = f[1].location;
+    } catch (_) {
+    }
     if (object is Error) {
-      _print(object.toString());
+      _print('$l $object');
       _print(object.stackTrace.toString());
     } else {
-      _print(object.toString());
+      _print('$l $object');
     }
   }
 
   static void warning(Object object) {
+    final f = Trace.from(StackTrace.current).frames;
+    String l = '';
+    try {
+      l = f[1].location;
+    } catch (_) {
+    }
     if (object is Error) {
-      print(_warningColor(object.toString()));
+      print('$l ${_warningColor(object.toString())}');
       print(object.stackTrace);
     } else {
-      print(object);
+      print('$l $object');
     }
   }
 
   static void error(Object object) {
+    final f = Trace.from(StackTrace.current).frames;
+    String l = '';
+    try {
+      l = f[1].location;
+    } catch (_) {
+    }
     print('--------------------------------------------');
     if (object is Error) {
-      print(_errorColor(object.toString()));
+      print('$l ${_errorColor(object.toString())}');
       print(object.stackTrace);
     } else {
-      print(object);
+      print('$l $object');
     }
     try {
       if (onError != null && onError!(_log.toString())) _log.clear();
