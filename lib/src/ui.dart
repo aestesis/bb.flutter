@@ -104,6 +104,7 @@ class ExpandableState extends State<Expandable>
 
   @override
   Widget build(BuildContext context) => TapRegion(
+      consumeOutsideTaps: widget.expanded,
       onTapOutside: (_) {
         if (widget.expanded) widget.onTapOutside?.call();
       },
