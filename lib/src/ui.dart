@@ -34,12 +34,14 @@ class Expandable extends StatefulWidget {
   final Widget? child;
   final bool expanded;
   final bool alwaysInTree;
+  final VoidCallback? onTapOutside;
   const Expandable(
       {this.expanded = false,
       this.child,
       this.duration = const Duration(milliseconds: 400),
       this.alwaysInTree = false,
-      super.key});
+      super.key,
+      this.onTapOutside});
   @override
   ExpandableState createState() => ExpandableState();
 }
@@ -81,42 +83,18 @@ class ExpandableState extends State<Expandable>
   }
 
   @override
-  Widget build(BuildContext context) => SizeTransition(
-      axisAlignment: 1.0,
-      sizeFactor: animation,
-      child: widget.alwaysInTree
-          ? widget.child
-          : (widget.expanded || controller.value > 0)
+  Widget build(BuildContext context) => TapRegion(
+      onTapOutside: (_) {
+        if (widget.expanded) widget.onTapOutside?.call();
+      },
+      child: SizeTransition(
+          axisAlignment: 1.0,
+          sizeFactor: animation,
+          child: widget.alwaysInTree
               ? widget.child
-              : null);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-class ExpandableToolbar extends StatelessWidget {
-  final Duration duration;
-  final Widget? child;
-  final bool expanded;
-  final VoidCallback? onTapOutside;
-  const ExpandableToolbar(
-      {super.key,
-      this.duration = const Duration(milliseconds: 400),
-      this.child,
-      this.expanded = false,
-      this.onTapOutside});
-
-  @override
-  Widget build(BuildContext context) {
-    return TapRegion(
-        onTapOutside: (_) {
-          if (expanded) onTapOutside?.call();
-        },
-        child: Expandable(
-            alwaysInTree: true,
-            duration: duration,
-            expanded: expanded,
-            child: child));
-  }
+              : (widget.expanded || controller.value > 0)
+                  ? widget.child
+                  : null));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
