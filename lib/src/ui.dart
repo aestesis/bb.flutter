@@ -37,7 +37,7 @@ class Expandable extends StatefulWidget {
   const Expandable(
       {this.expanded = false,
       this.child,
-      this.duration = const Duration(milliseconds: 500),
+      this.duration = const Duration(milliseconds: 400),
       this.alwaysInTree = false,
       super.key});
   @override
@@ -89,6 +89,34 @@ class ExpandableState extends State<Expandable>
           : (widget.expanded || controller.value > 0)
               ? widget.child
               : null);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+class ExpandableToolbar extends StatelessWidget {
+  final Duration duration;
+  final Widget? child;
+  final bool expanded;
+  final VoidCallback? onTapOutside;
+  const ExpandableToolbar(
+      {super.key,
+      this.duration = const Duration(milliseconds: 400),
+      this.child,
+      this.expanded = false,
+      this.onTapOutside});
+
+  @override
+  Widget build(BuildContext context) {
+    return TapRegion(
+        onTapOutside: (_) {
+          if (expanded) onTapOutside?.call();
+        },
+        child: Expandable(
+            alwaysInTree: true,
+            duration: duration,
+            expanded: expanded,
+            child: child));
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

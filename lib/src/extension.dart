@@ -11,10 +11,11 @@ import 'package:intl/intl.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension DoubleExtension on double {
-  String toCurrencyString({int? decimal}) {
-    NumberFormat nf = NumberFormat(null, 'fr_FR');
+  String toCurrencyString(
+      {int? decimal, String currency = '€', String locale = 'fr_FR'}) {
+    NumberFormat nf = NumberFormat(null, locale);
     nf.maximumFractionDigits = decimal ?? (round() == this ? 0 : 2);
-    return '${nf.format(this)} €';
+    return '${nf.format(this)} $currency';
   }
 
   String toFixed({int? decimal}) {
@@ -46,9 +47,9 @@ extension StringExtension on String {
   bool operator <=(String other) => compareTo(other) <= 0;
   bool operator >=(String other) => compareTo(other) >= 0;
 
-  int levenshtein(String other,
+  int distance(String other,
           {bool caseSensitive = true, bool ignoreDiacritics = false}) =>
-      levenshteinDistance(this, other,
+      _levenshteinDistance(this, other,
           caseSensitive: caseSensitive, ignoreDiacritics: ignoreDiacritics);
 
   String removeDiacritics() => dia.removeDiacritics(this);
@@ -190,7 +191,7 @@ extension StringExtension on String {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-int levenshteinDistance(String s, String t,
+int _levenshteinDistance(String s, String t,
     {bool caseSensitive = true, bool ignoreDiacritics = false}) {
   if (!caseSensitive) {
     s = s.toLowerCase();
