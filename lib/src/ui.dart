@@ -29,19 +29,39 @@ class SliverChildBuilderSeparatedDelegate extends SliverChildBuilderDelegate {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+enum AxisAlignement {
+  start,
+  center,
+  end;
+
+  double get value {
+    switch (this) {
+      case AxisAlignement.start:
+        return -1;
+      case AxisAlignement.center:
+        return 0;
+      case AxisAlignement.end:
+        return 1;
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Expandable extends StatefulWidget {
   final Duration duration;
   final Widget? child;
   final bool expanded;
   final bool alwaysInTree;
   final VoidCallback? onTapOutside;
+  final AxisAlignement axisAlignement;
   const Expandable(
       {this.expanded = false,
       this.child,
       this.duration = const Duration(milliseconds: 400),
       this.alwaysInTree = false,
       super.key,
-      this.onTapOutside});
+      this.onTapOutside,
+      this.axisAlignement = AxisAlignement.start});
   @override
   ExpandableState createState() => ExpandableState();
 }
@@ -88,7 +108,7 @@ class ExpandableState extends State<Expandable>
         if (widget.expanded) widget.onTapOutside?.call();
       },
       child: SizeTransition(
-          axisAlignment: 1.0,
+          axisAlignment: widget.axisAlignement.value,
           sizeFactor: animation,
           child: widget.alwaysInTree
               ? widget.child
