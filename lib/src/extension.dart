@@ -18,9 +18,9 @@ extension DoubleExtension on double {
     return '${nf.format(this)} $currency';
   }
 
-  String toFixed({int? decimal}) {
+  String toFixed([int? count]) {    
     NumberFormat nf = NumberFormat('##################.##', 'fr_FR');
-    nf.maximumFractionDigits = decimal ?? (round() == this ? 0 : 2);
+    nf.maximumFractionDigits = count ?? (round() == this ? 0 : 2);
     return nf.format(this);
   }
 
