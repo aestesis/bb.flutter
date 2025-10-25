@@ -18,7 +18,7 @@ extension DoubleExtension on double {
     return '${nf.format(this)} $currency';
   }
 
-  String toFixed([int? count]) {    
+  String toFixed([int? count]) {
     NumberFormat nf = NumberFormat('##################.##', 'fr_FR');
     nf.maximumFractionDigits = count ?? (round() == this ? 0 : 2);
     return nf.format(this);
@@ -188,6 +188,10 @@ extension StringExtension on String {
     }
     return Uint8List.fromList(res);
   }
+
+  static final _escapeRE = RegExp(r'(?:%[\da-fA-F]{2})+');
+  String get decodedUri => // utf8 compatible cause Uri.decode is only ascii
+      replaceAllMapped(_escapeRE, (m) => Uri.decodeComponent(m[0]!));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
