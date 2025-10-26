@@ -52,6 +52,7 @@ class Expandable extends StatefulWidget {
   final Widget? child;
   final bool expanded;
   final bool alwaysInTree;
+  final VoidCallback? onTapInside;
   final VoidCallback? onTapOutside;
   final AxisAlignement axisAlignement;
   const Expandable(
@@ -105,6 +106,9 @@ class ExpandableState extends State<Expandable>
   @override
   Widget build(BuildContext context) => TapRegion(
       consumeOutsideTaps: widget.expanded,
+      onTapInside: (_) {
+        if (widget.expanded) widget.onTapInside?.call();
+      },
       onTapOutside: (_) {
         if (widget.expanded) widget.onTapOutside?.call();
       },
