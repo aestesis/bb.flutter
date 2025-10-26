@@ -18,7 +18,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'extension.dart';
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef BoolCallback = void Function(bool);
@@ -139,10 +138,11 @@ class BB {
   }
 
   static Future<String> saveImage(
-      {required List<int> data, int width = 256}) async {
+      {required List<int> data, int width = 256, String? folder}) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
-    final file = File('${directory.path}/$key.png');
+    final file =
+        File('${directory.path}${folder != null ? '/$folder' : ''}/$key.png');
     if (await file.exists()) {
       return file.path;
     }
