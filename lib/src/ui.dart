@@ -61,6 +61,7 @@ class Expandable extends StatefulWidget {
       this.duration = const Duration(milliseconds: 400),
       this.alwaysInTree = false,
       super.key,
+      this.onTapInside,
       this.onTapOutside,
       this.axisAlignement = AxisAlignement.start});
   @override
