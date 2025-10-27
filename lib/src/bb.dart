@@ -141,8 +141,12 @@ class BB {
       {required List<int> data, int width = 256, String? folder}) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
-    final file =
-        File('${directory.path}${folder != null ? '/$folder' : ''}/$key.png');
+    final dir =
+        Directory('${directory.path}${folder != null ? '/$folder' : ''}');
+    if (folder != null && !await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    final file = File('${dir.path}/$key.png');
     if (await file.exists()) {
       return file.path;
     }
