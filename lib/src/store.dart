@@ -28,11 +28,11 @@ class Store {
     await prefs.remove(key);
   }
 
-  static Future<void> write(String key, Map<String, dynamic> json) async {
+  static Future<void> write(String key, dynamic json) async {
     await prefs.setString(key, jsonEncode(json));
   }
 
-  static Future<Map<String, dynamic>> read(String key) async {
+  static Future<dynamic> read(String key) async {
     var content = prefs.getString(key);
     if (content != null) return jsonDecode(content);
     throw ArgumentError('key $key not found');
