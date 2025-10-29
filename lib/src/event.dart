@@ -1,6 +1,16 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+
+// ignore: non_constant_identifier_names
+Widget EventValueBuilder<T>(
+        {required EventValue<T> event,
+        required Widget Function(BuildContext context, T value) builder}) =>
+    StreamBuilder(
+        initialData: event.value,
+        stream: event.stream,
+        builder: (c, s) => builder(c, s.data ?? event.value));
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,9 +109,7 @@ class Event<T> {
     return c.future;
   }
 
-  Stream<T> asStream() {
-    return _ctrl.stream;
-  }
+  Stream<T> get stream => _ctrl.stream;
 
   StreamSubscription<T> listen(void Function(T event)? onData,
           {Function? onError, void Function()? onDone, bool? cancelOnError}) =>
