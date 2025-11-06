@@ -25,49 +25,43 @@ class EventValue<T> extends Event<T> {
   void set(T v) {
     if (_value != v) {
       _value = v;
-      fire(v);
+      _dispatch(v);
     }
   }
 
+  @override
+  void fire(T o) => set(o);
   bool equals(T v) => v == _value;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-class EventSet<T> extends Event<Set<T>> {
-  // TODO: add more Set<T> compatibility [addAll(..) , etc..]
-  Set<T> _value;
-  EventSet(Set<T> value) : _value = value;
-  Set<T> get value => _value;
-  set value(Set<T> v) => set(v);
-  bool contains(T v) => _value.contains(v);
-  Set<T> get() => _value;
-  void set(Set<T> v) {
-    _value = v;
-    fire(v);
-  }
-
+class EventSet<T> extends EventValue<Set<T>> {
+  EventSet(super.value);
   void add(T v) {
     if (!_value.contains(v)) {
       _value.add(v);
-      fire(_value);
+      _dispatch(_value);
     }
   }
 
   void remove(T v) {
     if (_value.contains(v)) {
       _value.remove(v);
-      fire(_value);
+      _dispatch(_value);
     }
   }
 
   void clear() {
     if (_value.isNotEmpty) {
       _value.clear();
-      fire(_value);
+      _dispatch(_value);
     }
   }
 
+  @override
+  void fire(Set<T> o) => set(o);
+  @override
   bool equals(Set<T> v) => SetEquality().equals(v, _value);
 }
 
@@ -78,7 +72,7 @@ class Event<T> {
   final List<void Function(T)> _onces = [];
   final List<void Function(T)> _always = [];
   Event();
-  void fire(T o) {
+  void _dispatch(T o) {
     final onces = List.from(_onces);
     _onces.clear();
     for (final c in onces) {
@@ -90,6 +84,8 @@ class Event<T> {
     }
     _ctrl.add(o);
   }
+
+  void fire(T o) => _dispatch(o);
 
   void once(void Function(T) fn) {
     _onces.add(fn);
