@@ -1,3 +1,4 @@
+import 'package:image/image.dart' as img;
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -342,14 +343,19 @@ extension ImageProviderExt on ImageProvider {
     return (await completer.future as ImageInfo).image;
   }
 
-  Future<Uint8List> get pngBytes async {
+  Future<Uint8List> getBytes({ImageFormat format = ImageFormat.png}) async {
     final image = await uiImage;
-    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    if (byteData == null) {
-      throw Exception('error');
+    switch (format) {
+      case ImageFormat.png:
+        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        return byteData!.buffer.asUint8List();
+      case ImageFormat.jpeg:
+        final byteData =
+            await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+        final i = img.Image.fromBytes(
+            width: image.width, height: image.height, bytes: byteData!.buffer);
+        return img.encodeJpg(i);
     }
-    final Uint8List pngBytes = byteData.buffer.asUint8List();
-    return pngBytes;
   }
 }
 
@@ -368,6 +374,22 @@ extension IterableExt<T> on Iterable<T> {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension DurationExt on Duration {
   String toHumanString() => toString().split('.')[0];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+enum ImageFormat {
+  png,
+  jpeg;
+
+  String get fileExt {
+    switch (this) {
+      case ImageFormat.png:
+        return 'png';
+      case ImageFormat.jpeg:
+        return 'jpg';
+    }
+  }
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

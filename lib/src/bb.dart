@@ -10,7 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' as wid;
-
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_svg/svg.dart';
 import 'package:path_provider/path_provider.dart';
@@ -138,7 +137,10 @@ class BB {
   }
 
   static Future<String> saveImage(
-      {required List<int> data, int width = 256, String? folder}) async {
+      {required List<int> data,
+      int width = 256,
+      String? folder,
+      ImageFormat format = ImageFormat.png}) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
     final dir =
@@ -146,15 +148,15 @@ class BB {
     if (folder != null && !await dir.exists()) {
       await dir.create(recursive: true);
     }
-    final file = File('${dir.path}/$key.png');
-    if (await file.exists()) {
-      return file.path;
-    }
     final image = ResizeImage(
       MemoryImage(Uint8List.fromList(data)),
       width: width,
     );
-    final bytes = await image.pngBytes;
+    final file = File('${dir.path}/$key.${format.fileExt}');
+    if (await file.exists()) {
+      return file.path;
+    }
+    final bytes = await image.getBytes(format:format);
     await file.writeAsBytes(bytes);
     return file.path;
   }
