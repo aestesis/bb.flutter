@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:image/image.dart' as img;
 import 'dart:async';
 import 'dart:io';
@@ -390,6 +391,28 @@ enum ImageFormat {
         return 'jpg';
     }
   }
+
+  Uint8List encode({required img.Image image}) {
+    switch (this) {
+      case ImageFormat.png:
+        return img.encodePng(image);
+      case ImageFormat.jpeg:
+        return img.encodeJpg(image);
+    }
+  }
+
+  Future<bool> save({required String path, required img.Image image}) async {
+    switch (this) {
+      case ImageFormat.png:
+        return await img.encodePngFile(path, image);
+      case ImageFormat.jpeg:
+        return img.encodeJpgFile(path, image);
+    }
+  }
+
+  static ImageFormat? fromFileExt(String fileExt) =>
+      values.firstWhereOrNull((f) => f.fileExt == fileExt);
+  static ImageFormat? fromPath(String path) => fromFileExt(path.fileExt());
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

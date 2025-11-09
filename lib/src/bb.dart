@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 import 'dart:ui' as ui;
+import 'package:image/image.dart' as img;
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
@@ -137,7 +138,7 @@ class BB {
   }
 
   static Future<String> saveImage(
-      {required List<int> data,
+      {required Uint8List data,
       int width = 256,
       String? folder,
       ImageFormat format = ImageFormat.png}) async {
@@ -145,18 +146,19 @@ class BB {
     final key = md5.convert(data).toString();
     final dir =
         Directory('${directory.path}${folder != null ? '/$folder' : ''}');
-    if (folder != null && !await dir.exists()) {
-      await dir.create(recursive: true);
-    }
-    final image = ResizeImage(
-      MemoryImage(Uint8List.fromList(data)),
-      width: width,
-    );
     final file = File('${dir.path}/$key.${format.fileExt}');
     if (await file.exists()) {
       return file.path;
     }
-    final bytes = await image.getBytes(format:format);
+    if (folder != null && !await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    final si = img.decodeImage(data)!;
+    final image = img.resize(si,
+        width: min(width, si.width),
+        maintainAspect: true,
+        interpolation: img.Interpolation.cubic);
+    final bytes = format.encode(image: image);
     await file.writeAsBytes(bytes);
     return file.path;
   }
