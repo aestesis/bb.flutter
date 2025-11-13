@@ -13,7 +13,7 @@ dependencies:
   intl: any
   path_provider: any
   crypto: any
-  image: any
+  image: ^4.5.4
 
 
   url_launcher: any
