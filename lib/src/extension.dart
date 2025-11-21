@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:image/image.dart' as img;
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -8,6 +7,7 @@ import 'dart:ui' as ui;
 
 import 'package:diacritic/diacritic.dart' as dia;
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:intl/intl.dart';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,13 +347,13 @@ extension ImageProviderExt on ImageProvider {
   Future<Uint8List> getBytes(
       {ImageFormat format = ImageFormat.png, double quality = 1}) async {
     final image = await uiImage;
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final data = byteData!.buffer.asUint8List();
     switch (format) {
       case ImageFormat.png:
-        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        return byteData!.buffer.asUint8List();
+        return data;
       case ImageFormat.jpeg:
-        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        final i = img.decodePng(byteData!.buffer.asUint8List())!;
+        final i = img.decodePng(data)!;
         return img.encodeJpg(i, quality: (100 * quality).toInt());
     }
   }
