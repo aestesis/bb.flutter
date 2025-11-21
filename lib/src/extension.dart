@@ -344,18 +344,17 @@ extension ImageProviderExt on ImageProvider {
     return (await completer.future as ImageInfo).image;
   }
 
-  Future<Uint8List> getBytes({ImageFormat format = ImageFormat.png}) async {
+  Future<Uint8List> getBytes(
+      {ImageFormat format = ImageFormat.png, double quality = 1}) async {
     final image = await uiImage;
     switch (format) {
       case ImageFormat.png:
         final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
         return byteData!.buffer.asUint8List();
       case ImageFormat.jpeg:
-        final byteData =
-            await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-        final i = img.Image.fromBytes(
-            width: image.width, height: image.height, bytes: byteData!.buffer);
-        return img.encodeJpg(i);
+        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        final i = img.decodePng(byteData!.buffer.asUint8List())!;
+        return img.encodeJpg(i, quality: (100 * quality).toInt());
     }
   }
 }

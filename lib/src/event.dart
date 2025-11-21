@@ -140,7 +140,7 @@ class Event<T> {
 class Action {
   static Timer run(Duration tick, void Function(Timer timer) callback) =>
       Timer.periodic(tick, callback);
-  static Timer exec(Duration wait, VoidCallback callback) =>
+  static Timer invoke(Duration wait, VoidCallback callback) =>
       Timer(wait, callback);
   static Timer race(VoidCallback callback) => Timer(Duration.zero, callback);
 }
