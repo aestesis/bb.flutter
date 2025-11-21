@@ -9,3 +9,4 @@ export 'src/signal.dart';
 export 'src/store.dart';
 export 'src/ui.dart';
 export 'src/utils.dart';
+export 'src/log.dart';
