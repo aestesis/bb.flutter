@@ -159,34 +159,6 @@ class BB {
     return file.path;
   }
 
-/*
-  static Future<String> saveImage(
-      {required Uint8List data,
-      int width = 256,
-      String? folder,
-      ImageFormat format = ImageFormat.png}) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final key = md5.convert(data).toString();
-    final dir =
-        Directory('${directory.path}${folder != null ? '/$folder' : ''}');
-    final file = File('${dir.path}/$key.${format.fileExt}');
-    if (await file.exists()) {
-      return file.path;
-    }
-    if (folder != null && !await dir.exists()) {
-      await dir.create(recursive: true);
-    }
-    final si = img.decodeImage(data)!;
-    final image = img.resize(si,
-        width: min(width, si.width),
-        maintainAspect: true,
-        interpolation: img.Interpolation.cubic);
-    final bytes = format.encode(image: image);
-    await file.writeAsBytes(bytes);
-    return file.path;
-  }
-
-*/
   static List<T> separator<T>(
       {required Iterable<T> items,
       required T Function() separatorBuilder,
