@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 import 'dart:math';
 import 'dart:ui';
 import 'dart:ui' as ui;
@@ -39,6 +40,26 @@ class BB {
 
   static double get time =>
       DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
+
+  Future<dynamic> run(Future Function() function) async {
+    final receivePort = ReceivePort();
+    final rootToken = RootIsolateToken.instance!;
+    await Isolate.spawn<_IsolateData>(
+      _isolateEntry,
+      _IsolateData(
+        token: rootToken,
+        function: function,
+        answerPort: receivePort.sendPort,
+      ),
+    );
+    return await receivePort.first;
+  }
+
+  static void _isolateEntry(_IsolateData isolateData) async {
+    BackgroundIsolateBinaryMessenger.ensureInitialized(isolateData.token);
+    final answer = await isolateData.function();
+    isolateData.answerPort.send(answer);
+  }
 
   static Future<void> sleep(Duration duration) {
     final c = Completer();
@@ -315,5 +336,18 @@ final Uint8List kTransparentImage = Uint8List.fromList(<int>[
   0x82,
 ]);
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+class _IsolateData {
+  final RootIsolateToken token;
+  final Function function;
+  final SendPort answerPort;
+
+  _IsolateData({
+    required this.token,
+    required this.function,
+    required this.answerPort,
+  });
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
