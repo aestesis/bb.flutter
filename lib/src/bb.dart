@@ -59,6 +59,7 @@ class BB {
     BackgroundIsolateBinaryMessenger.ensureInitialized(isolateData.token);
     final answer = await isolateData.function();
     isolateData.answerPort.send(answer);
+    Isolate.exit();
   }
 
   static Future<void> sleep(Duration duration) {
