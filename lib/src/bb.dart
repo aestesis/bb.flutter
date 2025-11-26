@@ -41,7 +41,7 @@ class BB {
   static double get time =>
       DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
 
-  Future<dynamic> run(Future Function() function) async {
+  static Future<dynamic> run(Future Function() function) async {
     final receivePort = ReceivePort();
     final rootToken = RootIsolateToken.instance!;
     await Isolate.spawn<_IsolateData>(
