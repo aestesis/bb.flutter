@@ -15,6 +15,7 @@ import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_svg/svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:image/image.dart' as img;
 
 import 'extension.dart';
 
@@ -86,7 +87,9 @@ class BB {
   }
 
   static Map<String, dynamic> merge(
-      Map<String, dynamic> a, Map<String, dynamic> b) {
+    Map<String, dynamic> a,
+    Map<String, dynamic> b,
+  ) {
     Map<String, dynamic> r = {};
     r.addAll(a);
     r.addAll(b);
@@ -97,15 +100,22 @@ class BB {
     return jsonDecode(await rootBundle.loadString(asset));
   }
 
-  static Future<ui.Image> assetImage(String asset,
-          {String? package, double devicePixelRatio = 1}) async =>
-      await asset2Image(AssetImage(asset, package: package),
-          devicePixelRatio: devicePixelRatio);
+  static Future<ui.Image> assetImage(
+    String asset, {
+    String? package,
+    double devicePixelRatio = 1,
+  }) async => await asset2Image(
+    AssetImage(asset, package: package),
+    devicePixelRatio: devicePixelRatio,
+  );
 
-  static Future<ui.Image> asset2Image(AssetImage ai,
-      {double devicePixelRatio = 1}) async {
-    final key = await ai
-        .obtainKey(ImageConfiguration(devicePixelRatio: devicePixelRatio));
+  static Future<ui.Image> asset2Image(
+    AssetImage ai, {
+    double devicePixelRatio = 1,
+  }) async {
+    final key = await ai.obtainKey(
+      ImageConfiguration(devicePixelRatio: devicePixelRatio),
+    );
     final bd = await key.bundle.load(key.name);
     final list = Uint8List.view(bd.buffer);
     final codec = await instantiateImageCodec(list);
@@ -113,8 +123,10 @@ class BB {
     return frame.image;
   }
 
-  static Future<ui.Image> loadImage(ImageProvider provider,
-      {double devicePixelRatio = 1}) {
+  static Future<ui.Image> loadImage(
+    ImageProvider provider, {
+    double devicePixelRatio = 1,
+  }) {
     final config = ImageConfiguration(
       bundle: rootBundle,
       devicePixelRatio: devicePixelRatio,
@@ -124,50 +136,60 @@ class BB {
     final ImageStream stream = provider.resolve(config);
     provider.obtainKey(config).then((key) {});
     ImageStreamListener? listener;
-    listener = ImageStreamListener((ImageInfo image, bool synchro) {
-      stream.removeListener(listener!);
-      completer.complete(image.image);
-    }, onError: (exception, stackTrace) {
-      stream.removeListener(listener!);
-      completer.completeError(exception, stackTrace);
-    });
+    listener = ImageStreamListener(
+      (ImageInfo image, bool synchro) {
+        stream.removeListener(listener!);
+        completer.complete(image.image);
+      },
+      onError: (exception, stackTrace) {
+        stream.removeListener(listener!);
+        completer.completeError(exception, stackTrace);
+      },
+    );
     stream.addListener(listener);
     return completer.future;
   }
 
-  static Future<ui.Image> makeImage(
-      {required Size size,
-      required String text,
-      required Color color,
-      required Color background,
-      double devicePixelRatio = 1}) async {
+  static Future<ui.Image> makeImage({
+    required Size size,
+    required String text,
+    required Color color,
+    required Color background,
+    double devicePixelRatio = 1,
+  }) async {
     size = size * (0.5 * pow(2.0, devicePixelRatio));
     final fontSize = (text.length > 3 ? 16 : 24) * (size.height / 64);
     var recorder = PictureRecorder();
     var canvas = Canvas(recorder);
     canvas.drawColor(background, wid.BlendMode.src);
     var ts = TextSpan(
-        style: TextStyle(color: color, fontSize: fontSize), text: text);
+      style: TextStyle(color: color, fontSize: fontSize),
+      text: text,
+    );
     var painter = TextPainter(
-        text: ts,
-        textAlign: TextAlign.center,
-        textDirection: painting.TextDirection.ltr);
+      text: ts,
+      textAlign: TextAlign.center,
+      textDirection: painting.TextDirection.ltr,
+    );
     painter.layout(minWidth: size.width, maxWidth: size.width);
     painter.paint(canvas, Offset(0, (size.height - fontSize) * 0.45));
     var picture = recorder.endRecording();
     return await picture.toImage(size.width.round(), size.height.round());
   }
 
-  static Future<String> saveImage(
-      {required Uint8List data,
-      int width = 256,
-      String? folder,
-      double quality = 1,
-      ImageFormat format = ImageFormat.png}) async {
+  static Future<String> saveImage({
+    required Uint8List data,
+    int width = 256,
+    String? folder,
+    double quality = 1,
+    ImageFormat format = ImageFormat.png,
+    bool useImagePlugin = false,
+  }) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
-    final dir =
-        Directory('${directory.path}${folder != null ? '/$folder' : ''}');
+    final dir = Directory(
+      '${directory.path}${folder != null ? '/$folder' : ''}',
+    );
     final file = File('${dir.path}/$key.${format.fileExt}');
     if (await file.exists()) {
       return file.path;
@@ -175,18 +197,39 @@ class BB {
     if (folder != null && !await dir.exists()) {
       await dir.create(recursive: true);
     }
-    final src = MemoryImage(data);
-    final sized = ResizeImage(src, width: width);
-    final bytes = await sized.getBytes(format: format, quality: quality);
-    await file.writeAsBytes(bytes);
+    if (useImagePlugin) {
+      final src = img.decodeImage(data)!;
+      final dst = img.resize(
+        src,
+        width: min(width, src.width),
+        maintainAspect: true,
+        interpolation: .cubic,
+      );
+      switch (format) {
+        case ImageFormat.png:
+          final bytes = img.encodePng(dst);
+          await file.writeAsBytes(bytes);
+          return file.path;
+        case ImageFormat.jpeg:
+          final bytes = img.encodeJpg(dst, quality: (100 * quality).toInt());
+          await file.writeAsBytes(bytes);
+          return file.path;
+      }
+    } else {
+      final src = MemoryImage(data);
+      final sized = ResizeImage(src, width: width);
+      final bytes = await sized.getBytes(format: format, quality: quality);
+      await file.writeAsBytes(bytes);
+    }
     return file.path;
   }
 
-  static List<T> separator<T>(
-      {required Iterable<T> items,
-      required T Function() separatorBuilder,
-      bool before = false,
-      bool after = false}) {
+  static List<T> separator<T>({
+    required Iterable<T> items,
+    required T Function() separatorBuilder,
+    bool before = false,
+    bool after = false,
+  }) {
     final List<T> l = [];
     if (before && items.isNotEmpty) l.add(separatorBuilder());
     int i = items.length;
@@ -200,8 +243,10 @@ class BB {
     return l;
   }
 
-  static bool versionBiggerOrEqual(
-      {required String current, required String minimum}) {
+  static bool versionBiggerOrEqual({
+    required String current,
+    required String minimum,
+  }) {
     final mini = minimum.split('.').map((n) => int.tryParse(n) ?? 0).toList();
     final curr = current.split('.').map((n) => int.tryParse(n) ?? 0).toList();
     final len = min(mini.length, curr.length);
@@ -217,9 +262,11 @@ class BB {
     return id;
   }
 
-  static Future<bool> open(String url,
-      {String regionCode = 'FR',
-      LaunchMode mode = LaunchMode.inAppWebView}) async {
+  static Future<bool> open(
+    String url, {
+    String regionCode = 'FR',
+    LaunchMode mode = LaunchMode.inAppWebView,
+  }) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url), mode: mode);
       return true;
@@ -237,10 +284,11 @@ class BB {
   }
 
   static Widget svg(String asset, {Color? color}) => SvgPicture.asset(
-        asset,
-        colorFilter:
-            color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
-      );
+    asset,
+    colorFilter: color != null
+        ? ColorFilter.mode(color, BlendMode.srcIn)
+        : null,
+  );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,8 +298,8 @@ class Range<T extends num> {
   final T? max;
   const Range({this.min, this.max});
   const Range.at(T p, {T? margin})
-      : min = (p - (margin ?? 0)) as T,
-        max = (p + (margin ?? 0)) as T;
+    : min = (p - (margin ?? 0)) as T,
+      max = (p + (margin ?? 0)) as T;
   Range<T> expand(T margin) =>
       Range(min: (min! - margin) as T, max: (max! + margin) as T);
   @override
@@ -351,5 +399,6 @@ class _IsolateData {
     required this.answerPort,
   });
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
