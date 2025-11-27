@@ -183,7 +183,6 @@ class BB {
     String? folder,
     double quality = 1,
     ImageFormat format = ImageFormat.png,
-    bool useImagePlugin = false,
   }) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
@@ -197,7 +196,7 @@ class BB {
     if (folder != null && !await dir.exists()) {
       await dir.create(recursive: true);
     }
-    if (useImagePlugin) {
+    if (Isolate.current.debugName != 'main') {
       final src = img.decodeImage(data)!;
       final dst = img.resize(
         src,
