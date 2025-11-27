@@ -41,7 +41,6 @@ class BB {
   static double get time =>
       DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
 
-
   static Future<dynamic> run(Future Function() function) async {
     final receivePort = ReceivePort();
     final rootToken = RootIsolateToken.instance!;
@@ -58,7 +57,7 @@ class BB {
 
   static void _isolateEntry(_IsolateData isolateData) async {
     BackgroundIsolateBinaryMessenger.ensureInitialized(isolateData.token);
-    final answer = await isolateData.function();    
+    final answer = await isolateData.function();
     isolateData.answerPort.send(answer);
     Isolate.exit();
   }
@@ -163,6 +162,7 @@ class BB {
       {required Uint8List data,
       int width = 256,
       String? folder,
+      double quality = 1,
       ImageFormat format = ImageFormat.png}) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
@@ -177,7 +177,7 @@ class BB {
     }
     final src = MemoryImage(data);
     final sized = ResizeImage(src, width: width);
-    final bytes = await sized.getBytes(format: format);
+    final bytes = await sized.getBytes(format: format, quality: quality);
     await file.writeAsBytes(bytes);
     return file.path;
   }
