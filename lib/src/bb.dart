@@ -41,6 +41,7 @@ class BB {
   static double get time =>
       DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
 
+
   static Future<dynamic> run(Future Function() function) async {
     final receivePort = ReceivePort();
     final rootToken = RootIsolateToken.instance!;
@@ -57,7 +58,7 @@ class BB {
 
   static void _isolateEntry(_IsolateData isolateData) async {
     BackgroundIsolateBinaryMessenger.ensureInitialized(isolateData.token);
-    final answer = await isolateData.function();
+    final answer = await isolateData.function();    
     isolateData.answerPort.send(answer);
     Isolate.exit();
   }
