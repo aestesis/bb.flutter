@@ -13,8 +13,11 @@ import 'package:intl/intl.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension DoubleExtension on double {
-  String toCurrencyString(
-      {int? decimal, String currency = '€', String locale = 'fr_FR'}) {
+  String toCurrencyString({
+    int? decimal,
+    String currency = '€',
+    String locale = 'fr_FR',
+  }) {
     NumberFormat nf = NumberFormat(null, locale);
     nf.maximumFractionDigits = decimal ?? (round() == this ? 0 : 2);
     return '${nf.format(this)} $currency';
@@ -35,10 +38,17 @@ extension DoubleExtension on double {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension StringExtension on String {
+  // TODO: seek internet for a more utf8 friendly regex
+  static final regexWords = RegExp(
+    r"[a-zA-Z0-9àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ#]+",
+  );
+  Iterable<String> get words =>
+      regexWords.allMatches(this).map((m) => m.group(0)).whereType<String>();
+
   String max({required int length, bool ellipsis = false}) =>
       this.length <= length
-          ? this
-          : (substring(0, length) + (ellipsis ? '..' : ''));
+      ? this
+      : (substring(0, length) + (ellipsis ? '..' : ''));
   String get capitalized {
     if (isEmpty) return '';
     return '${this[0].toUpperCase()}${substring(1).toLowerCase()}';
@@ -49,10 +59,16 @@ extension StringExtension on String {
   bool operator <=(String other) => compareTo(other) <= 0;
   bool operator >=(String other) => compareTo(other) >= 0;
 
-  int distance(String other,
-          {bool caseSensitive = true, bool ignoreDiacritics = false}) =>
-      _levenshteinDistance(this, other,
-          caseSensitive: caseSensitive, ignoreDiacritics: ignoreDiacritics);
+  int distance(
+    String other, {
+    bool caseSensitive = true,
+    bool ignoreDiacritics = false,
+  }) => _levenshteinDistance(
+    this,
+    other,
+    caseSensitive: caseSensitive,
+    ignoreDiacritics: ignoreDiacritics,
+  );
 
   String removeDiacritics() => dia.removeDiacritics(this);
 
@@ -197,8 +213,12 @@ extension StringExtension on String {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-int _levenshteinDistance(String s, String t,
-    {bool caseSensitive = true, bool ignoreDiacritics = false}) {
+int _levenshteinDistance(
+  String s,
+  String t, {
+  bool caseSensitive = true,
+  bool ignoreDiacritics = false,
+}) {
   if (!caseSensitive) {
     s = s.toLowerCase();
     t = t.toLowerCase();
@@ -251,36 +271,43 @@ extension HexColor on Color {
     }
   }
 
-  String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+  String toHex({bool leadingHashSign = true}) =>
+      '${leadingHashSign ? '#' : ''}'
       '${a8.toRadixString(16).padLeft(2, '0')}'
       '${r8.toRadixString(16).padLeft(2, '0')}'
       '${g8.toRadixString(16).padLeft(2, '0')}'
       '${b8.toRadixString(16).padLeft(2, '0')}';
 
   Color operator *(Color color) => Color.from(
-        alpha: a * color.a,
-        red: r * color.r,
-        green: g * color.g,
-        blue: color.b,
-      );
+    alpha: a * color.a,
+    red: r * color.r,
+    green: g * color.g,
+    blue: color.b,
+  );
 
   Color operator +(Color color) => Color.from(
-        alpha: a + color.a,
-        red: r + color.r,
-        green: g + color.g,
-        blue: b + color.b,
-      );
+    alpha: a + color.a,
+    red: r + color.r,
+    green: g + color.g,
+    blue: b + color.b,
+  );
 
   Color mulOpacity(double opacity) => withValues(alpha: opacity * a);
 
   Color rgbLerp(Color other, double t) => Color.lerp(this, other, t) ?? this;
   Color hsvLerp(Color other, double t) =>
-      HSVColor.lerp(HSVColor.fromColor(this), HSVColor.fromColor(other), t)
-          ?.toColor() ??
+      HSVColor.lerp(
+        HSVColor.fromColor(this),
+        HSVColor.fromColor(other),
+        t,
+      )?.toColor() ??
       this;
   Color hslLerp(Color other, double t) =>
-      HSLColor.lerp(HSLColor.fromColor(this), HSLColor.fromColor(other), t)
-          ?.toColor() ??
+      HSLColor.lerp(
+        HSLColor.fromColor(this),
+        HSLColor.fromColor(other),
+        t,
+      )?.toColor() ??
       this;
 
   int get a8 => (a * 255).toInt();
@@ -294,10 +321,11 @@ extension HexColor on Color {
     double b = this.b * factor + offset;
     double a = this.a;
     return Color.from(
-        alpha: max(min(a, 1), 0),
-        red: max(min(r, 1), 0),
-        green: max(min(g, 1), 0),
-        blue: max(min(b, 1), 0));
+      alpha: max(min(a, 1), 0),
+      red: max(min(r, 1), 0),
+      green: max(min(g, 1), 0),
+      blue: max(min(b, 1), 0),
+    );
   }
 }
 
@@ -344,8 +372,10 @@ extension ImageProviderExt on ImageProvider {
     return (await completer.future as ImageInfo).image;
   }
 
-  Future<Uint8List> getBytes(
-      {ImageFormat format = ImageFormat.png, double quality = 1}) async {
+  Future<Uint8List> getBytes({
+    ImageFormat format = ImageFormat.png,
+    double quality = 1,
+  }) async {
     final image = await uiImage;
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     final data = byteData!.buffer.asUint8List();
@@ -413,5 +443,6 @@ enum ImageFormat {
       values.firstWhereOrNull((f) => f.fileExt == fileExt);
   static ImageFormat? fromPath(String path) => fromFileExt(path.fileExt());
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
