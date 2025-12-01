@@ -263,14 +263,9 @@ class BB {
 
   static Future<bool> open(
     String url, {
-    String regionCode = 'FR',
-    LaunchMode mode = LaunchMode.inAppWebView,
+    LaunchMode mode = LaunchMode.platformDefault,
   }) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: mode);
-      return true;
-    }
-    return false;
+    return await launchUrl(Uri.parse(url), mode: mode);
   }
 
   static Future<bool> openHttp(String url) async {
