@@ -183,6 +183,7 @@ class BB {
     String? folder,
     double quality = 1,
     ImageFormat format = ImageFormat.png,
+    double? aspectCrop,
   }) async {
     final directory = await getApplicationDocumentsDirectory();
     final key = md5.convert(data).toString();
@@ -198,27 +199,66 @@ class BB {
     }
     if (Isolate.current.debugName != 'main') {
       final src = img.decodeImage(data)!;
-      final dst = img.resize(
+      img.Image dst = img.resize(
         src,
         width: min(width, src.width),
         maintainAspect: true,
         interpolation: .cubic,
       );
+      if (aspectCrop != null) {
+        final rs = Rect.fromLTWH(
+          0,
+          0,
+          dst.width.toDouble(),
+          dst.height.toDouble(),
+        ).crop(aspect: aspectCrop);
+        dst = img.copyCrop(
+          dst,
+          x: rs.left.toInt(),
+          y: rs.top.toInt(),
+          width: rs.width.toInt(),
+          height: rs.height.toInt(),
+        );
+      }
+      Uint8List obytes = Uint8List.fromList([]);
       switch (format) {
         case ImageFormat.png:
-          final bytes = img.encodePng(dst);
-          await file.writeAsBytes(bytes);
-          return file.path;
+          obytes = img.encodePng(dst);
         case ImageFormat.jpeg:
-          final bytes = img.encodeJpg(dst, quality: (100 * quality).toInt());
-          await file.writeAsBytes(bytes);
-          return file.path;
+          obytes = img.encodeJpg(dst, quality: (100 * quality).toInt());
       }
+      await file.writeAsBytes(obytes);
     } else {
       final src = MemoryImage(data);
       final sized = ResizeImage(src, width: width);
-      final bytes = await sized.getBytes(format: format, quality: quality);
-      await file.writeAsBytes(bytes);
+      if (aspectCrop != null) {
+        final bytes = await sized.getBytes(format: .png);
+        final si = img.decodePng(bytes)!;
+        final rs = Rect.fromLTWH(
+          0,
+          0,
+          si.width.toDouble(),
+          si.height.toDouble(),
+        ).crop(aspect: aspectCrop);
+        final dst = img.copyCrop(
+          si,
+          x: rs.left.toInt(),
+          y: rs.top.toInt(),
+          width: rs.width.toInt(),
+          height: rs.height.toInt(),
+        );
+        Uint8List obytes = Uint8List.fromList([]);
+        switch (format) {
+          case ImageFormat.png:
+            obytes = img.encodePng(dst);
+          case ImageFormat.jpeg:
+            obytes = img.encodeJpg(dst, quality: (100 * quality).toInt());
+        }
+        await file.writeAsBytes(obytes);
+      } else {
+        final bytes = await sized.getBytes(format: format, quality: quality);
+        await file.writeAsBytes(bytes);
+      }
     }
     return file.path;
   }
