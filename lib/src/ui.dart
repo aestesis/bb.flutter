@@ -189,8 +189,8 @@ typedef DeviceOrientation = NativeDeviceOrientation;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension DeviceOrientationExt on DeviceOrientation {
-  bool get landscape => this == .landscapeLeft || this == .landscapeRight;
-  bool get portrain => !landscape;
+  bool get isLandscape => this == .landscapeLeft || this == .landscapeRight;
+  bool get isPortrait => !isLandscape;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
