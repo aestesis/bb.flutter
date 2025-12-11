@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,10 +156,7 @@ class Spans extends StatelessWidget {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class DeviceOrientationBuilder extends StatefulWidget {
-  final Widget Function(
-    BuildContext context,
-    DeviceOrientation orientation,
-  )?
+  final Widget Function(BuildContext context, DeviceOrientation orientation)?
   builder;
   const DeviceOrientationBuilder({super.key, this.builder});
   @override
@@ -173,7 +171,7 @@ class _DeviceOrientationBuilderState extends State<DeviceOrientationBuilder> {
   void initState() {
     super.initState();
     NativeDeviceOrientationCommunicator().onOrientationChanged().listen((o) {
-      orientation = o;
+      orientation = o.deviceOrientation ?? orientation;
       if (mounted) setState(() {});
     });
   }
@@ -185,8 +183,6 @@ class _DeviceOrientationBuilderState extends State<DeviceOrientationBuilder> {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef DeviceOrientation = NativeDeviceOrientation;
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension DeviceOrientationExt on DeviceOrientation {
   bool get isLandscape => this == .landscapeLeft || this == .landscapeRight;
