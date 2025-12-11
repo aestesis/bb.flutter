@@ -157,7 +157,7 @@ class Spans extends StatelessWidget {
 class DeviceOrientationBuilder extends StatefulWidget {
   final Widget Function(
     BuildContext context,
-    NativeDeviceOrientation orientation,
+    DeviceOrientation orientation,
   )?
   builder;
   const DeviceOrientationBuilder({super.key, this.builder});
