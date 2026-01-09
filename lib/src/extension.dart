@@ -453,5 +453,31 @@ extension EnumExt<T extends Enum> on T {
 extension EnumFromList<T extends Enum> on List<T> {
   T? findJson(String value) => firstWhereOrNull((f) => f.toJson() == value);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+extension ListPermuationExt on List {
+  List<List<T>> permutations<T>() {
+    void compute<A>(int k, List<A> a, List<List<A>> output) {
+      if (k == 1) {
+        output.add([...a]);
+        return;
+      }
+      for (int i = 0; i < k; i++) {
+        compute(k - 1, a, output);
+        if (k % 2 == 0) {
+          a.swap(i, k - 1);
+        } else {
+          a.swap(0, k - 1);
+        }
+      }
+    }
+
+    final List<List<T>> result = [];
+    compute(length, [...this], result);
+    return result;
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
