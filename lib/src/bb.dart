@@ -23,20 +23,8 @@ import 'extension.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class BB {
-  static Random random = Random(DateTime.now().millisecondsSinceEpoch);
-  static String alphaID() {
-    var data = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    var id = '';
-    for (var i = 0; i < 24; i++) {
-      var n = random.nextInt(data.length);
-      id += data[n];
-    }
-    return id;
-  }
-
-  static double get time =>
-      DateTime.now().millisecondsSinceEpoch.toDouble() / 1000;
-
+  static String alphaID() => random.alphaId();
+  static double get time => Run.time;
   static Future<dynamic> run(Future Function() function) async {
     final receivePort = ReceivePort();
     final rootToken = RootIsolateToken.instance!;
