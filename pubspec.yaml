@@ -1,6 +1,7 @@
 name: bb.flutter
 description: bbasic
 version: 0.0.4
+publish_to: none
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
@@ -9,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  bb_dart:
+    git: https://github.com/aestesis/bb.dart.git
   collection: any
   intl: any
   path_provider: any
@@ -24,6 +27,7 @@ dependencies:
   ansi_colorizer: any
   stack_trace: any
   native_device_orientation: any
+
 
   
 dev_dependencies:
