@@ -8,12 +8,16 @@ class CustomPage extends StatelessWidget {
   final SliverPersistentHeaderDelegate? header;
   final List<Widget>? slivers;
   final Color? color;
+  final bool pinnedHeader;
+  final bool floatingHeader;
   const CustomPage({
     super.key,
     this.slivers,
     this.color,
     this.header,
     this.controller,
+    this.pinnedHeader = true,
+    this.floatingHeader = false,
   });
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,11 @@ class CustomPage extends StatelessWidget {
               controller: controller,
               slivers: [
                 if (header != null) ...[
-                  SliverPersistentHeader(pinned: true, delegate: header!),
+                  SliverPersistentHeader(
+                    pinned: pinnedHeader,
+                    floating: floatingHeader,
+                    delegate: header!,
+                  ),
                   SliverPadding(
                     padding: EdgeInsets.only(bottom: safeArea.bottom),
                     sliver: SliverMainAxisGroup(slivers: slivers!),
