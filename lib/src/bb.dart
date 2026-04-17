@@ -25,7 +25,7 @@ import 'extension.dart';
 class BB {
   static String alphaID() => random.alphaId();
   static double get time => Run.time;
-  static Future<dynamic> run(Future Function() function) async {
+  static Future<T> run<T>(Future Function() function) async {
     final receivePort = ReceivePort();
     final rootToken = RootIsolateToken.instance!;
     await Isolate.spawn<_IsolateData>(

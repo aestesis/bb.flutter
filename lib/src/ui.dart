@@ -33,24 +33,6 @@ class SliverChildBuilderSeparatedDelegate extends SliverChildBuilderDelegate {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-enum AxisAlignement {
-  start,
-  center,
-  end;
-
-  double get value {
-    switch (this) {
-      case AxisAlignement.start:
-        return -1;
-      case AxisAlignement.center:
-        return 0;
-      case AxisAlignement.end:
-        return 1;
-    }
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Expandable extends StatefulWidget {
   final Duration duration;
   final Widget? child;
@@ -58,7 +40,7 @@ class Expandable extends StatefulWidget {
   final bool alwaysInTree;
   final VoidCallback? onTapInside;
   final VoidCallback? onTapOutside;
-  final AxisAlignement axisAlignement;
+  final AlignmentGeometry? alignement;
   const Expandable({
     this.expanded = false,
     this.child,
@@ -67,7 +49,7 @@ class Expandable extends StatefulWidget {
     super.key,
     this.onTapInside,
     this.onTapOutside,
-    this.axisAlignement = AxisAlignement.start,
+    this.alignement,
   });
   @override
   ExpandableState createState() => ExpandableState();
@@ -119,7 +101,7 @@ class ExpandableState extends State<Expandable>
       if (widget.expanded) widget.onTapOutside?.call();
     },
     child: SizeTransition(
-      axisAlignment: widget.axisAlignement.value,
+      alignment: widget.alignement,
       sizeFactor: animation,
       child: widget.alwaysInTree
           ? widget.child
@@ -187,6 +169,55 @@ class _DeviceOrientationBuilderState extends State<DeviceOrientationBuilder> {
 extension DeviceOrientationExt on DeviceOrientation {
   bool get isLandscape => this == .landscapeLeft || this == .landscapeRight;
   bool get isPortrait => !isLandscape;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+class CustomPage extends StatelessWidget {
+  final ScrollController? controller;
+  final SliverPersistentHeaderDelegate? headerDelegate;
+  final List<Widget>? slivers;
+  final Color? color;
+  const CustomPage({
+    super.key,
+    this.slivers,
+    this.color,
+    this.headerDelegate,
+    this.controller,
+  });
+  @override
+  Widget build(BuildContext context) {
+    final safeArea = MediaQuery.of(context).padding;
+    return Container(
+      color: color,
+      child: Column(
+        children: [
+          Expanded(
+            child: CustomScrollView(
+              controller: controller,
+              slivers: [
+                if (headerDelegate != null) ...[
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: headerDelegate!,
+                  ),
+                  SliverPadding(
+                    padding: EdgeInsets.only(bottom: safeArea.bottom),
+                    sliver: SliverMainAxisGroup(slivers: slivers!),
+                  ),
+                ],
+                if (headerDelegate == null)
+                  SliverPadding(
+                    padding: safeArea,
+                    sliver: SliverMainAxisGroup(slivers: slivers!),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
