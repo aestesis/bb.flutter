@@ -82,7 +82,10 @@ class CustomHeader extends SliverPersistentHeaderDelegate {
       constraints: BoxConstraints(minHeight: maxExtent),
       child: Container(
         color: color,
-        child: Container(padding: padding, child: child),
+        child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
+          child: Container(padding: padding, child: child),
+        ),
       ),
     );
   }
