@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 class CustomPage extends StatelessWidget {
   final ScrollController? controller;
-  final SliverPersistentHeaderDelegate? headerDelegate;
+  final SliverPersistentHeaderDelegate? header;
   final List<Widget>? slivers;
   final Color? color;
   const CustomPage({
     super.key,
     this.slivers,
     this.color,
-    this.headerDelegate,
+    this.header,
     this.controller,
   });
   @override
@@ -26,17 +26,17 @@ class CustomPage extends StatelessWidget {
             child: CustomScrollView(
               controller: controller,
               slivers: [
-                if (headerDelegate != null) ...[
+                if (header != null) ...[
                   SliverPersistentHeader(
                     pinned: true,
-                    delegate: headerDelegate!,
+                    delegate: header!,
                   ),
                   SliverPadding(
                     padding: EdgeInsets.only(bottom: safeArea.bottom),
                     sliver: SliverMainAxisGroup(slivers: slivers!),
                   ),
                 ],
-                if (headerDelegate == null)
+                if (header == null)
                   SliverPadding(
                     padding: safeArea,
                     sliver: SliverMainAxisGroup(slivers: slivers!),
