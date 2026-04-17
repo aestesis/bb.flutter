@@ -27,10 +27,7 @@ class CustomPage extends StatelessWidget {
               controller: controller,
               slivers: [
                 if (header != null) ...[
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: header!,
-                  ),
+                  SliverPersistentHeader(pinned: true, delegate: header!),
                   SliverPadding(
                     padding: EdgeInsets.only(bottom: safeArea.bottom),
                     sliver: SliverMainAxisGroup(slivers: slivers!),
@@ -65,6 +62,7 @@ class CustomHeader extends SliverPersistentHeaderDelegate {
     required this.maxExtent,
     this.color,
     this.padding,
+    this.child,
   }) : super();
   @override
   Widget build(
