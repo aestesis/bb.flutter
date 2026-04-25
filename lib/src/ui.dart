@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -177,6 +178,22 @@ class _DeviceOrientationBuilderState extends State<DeviceOrientationBuilder> {
 extension DeviceOrientationExt on DeviceOrientation {
   bool get isLandscape => this == .landscapeLeft || this == .landscapeRight;
   bool get isPortrait => !isLandscape;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+class DeviceOrientationNotification {
+  static StreamSubscription listen(void Function(DeviceOrientation o) onData) {
+    DeviceOrientation orientation = .portraitUp;
+    return NativeDeviceOrientationCommunicator().onOrientationChanged().listen((
+      o,
+    ) {
+      if (o.deviceOrientation != null && o.deviceOrientation != orientation) {
+        orientation = o.deviceOrientation!;
+        onData(orientation);
+      }
+    });
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
