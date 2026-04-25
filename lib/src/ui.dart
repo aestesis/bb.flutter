@@ -140,7 +140,12 @@ class Spans extends StatelessWidget {
 class DeviceOrientationBuilder extends StatefulWidget {
   final Widget Function(BuildContext context, DeviceOrientation orientation)?
   builder;
-  const DeviceOrientationBuilder({super.key, this.builder});
+  final void Function(DeviceOrientation orientation)? onOrientationChanged;
+  const DeviceOrientationBuilder({
+    super.key,
+    this.builder,
+    this.onOrientationChanged,
+  });
   @override
   State<DeviceOrientationBuilder> createState() =>
       _DeviceOrientationBuilderState();
@@ -153,8 +158,11 @@ class _DeviceOrientationBuilderState extends State<DeviceOrientationBuilder> {
   void initState() {
     super.initState();
     NativeDeviceOrientationCommunicator().onOrientationChanged().listen((o) {
-      orientation = o.deviceOrientation ?? orientation;
-      if (mounted) setState(() {});
+      if (o.deviceOrientation != null && o.deviceOrientation != orientation) {
+        orientation = o.deviceOrientation!;
+        widget.onOrientationChanged?.call(orientation);
+        if (mounted) setState(() {});
+      }
     });
   }
 
