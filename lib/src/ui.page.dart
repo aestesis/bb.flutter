@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,12 +66,14 @@ class CustomHeader extends SliverPersistentHeaderDelegate {
   Color? color;
   EdgeInsets? padding;
   Widget? child;
+  bool strech;
   CustomHeader({
     required this.minExtent,
     required this.maxExtent,
     this.color,
     this.padding,
     this.child,
+    this.strech = false,
   }) : super();
   @override
   Widget build(
@@ -113,6 +116,10 @@ class CustomHeader extends SliverPersistentHeaderDelegate {
         padding.hashCode ^
         child.hashCode;
   }
+
+  @override
+  OverScrollHeaderStretchConfiguration? get stretchConfiguration =>
+      strech ? OverScrollHeaderStretchConfiguration() : null;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
