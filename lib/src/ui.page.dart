@@ -83,8 +83,8 @@ class CustomHeader extends SliverPersistentHeaderDelegate {
   }) {
     if (vsync != null) {
       snapConfiguration ??= FloatingHeaderSnapConfiguration(
-        curve: Curves.bounceInOut,
-        duration: Duration(milliseconds: 200),
+        curve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 150),
       );
     }
   }
