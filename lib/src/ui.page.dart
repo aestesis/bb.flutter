@@ -63,6 +63,10 @@ class CustomHeader extends SliverPersistentHeaderDelegate {
   double minExtent;
   @override
   double maxExtent;
+  @override
+  TickerProvider? vsync;
+  @override
+  FloatingHeaderSnapConfiguration? snapConfiguration;
   Color? color;
   EdgeInsets? padding;
   Widget? child;
@@ -74,7 +78,16 @@ class CustomHeader extends SliverPersistentHeaderDelegate {
     this.padding,
     this.child,
     this.strech = false,
-  }) : super();
+    this.vsync,
+    this.snapConfiguration,
+  }) {
+    if (vsync != null) {
+      snapConfiguration ??= FloatingHeaderSnapConfiguration(
+        curve: Curves.bounceInOut,
+        duration: Duration(milliseconds: 200),
+      );
+    }
+  }
   @override
   Widget build(
     BuildContext context,
