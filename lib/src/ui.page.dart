@@ -17,7 +17,7 @@ class CustomPage extends StatelessWidget {
     this.color,
     this.header,
     this.controller,
-    this.pinnedHeader = true,
+    this.pinnedHeader = false,
     this.floatingHeader = false,
   });
   @override
