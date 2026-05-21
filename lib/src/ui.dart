@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
+
+import '../bb.dart';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,6 +215,20 @@ class _TickerWidgetState extends State<TickerWidget>
   Widget build(BuildContext context) {
     return widget.builder(context, this);
   }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+class LinkSpan extends TextSpan {
+  LinkSpan({super.text, super.style, super.mouseCursor, String? href})
+    : super(
+        recognizer: TapGestureRecognizer()
+          ..onTap = href != null
+              ? () {
+                  BB.open(href, mode: .externalApplication);
+                }
+              : null,
+      );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
