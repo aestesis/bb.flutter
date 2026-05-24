@@ -308,7 +308,7 @@ class BB {
         : null,
   );
 
- Future<String> downloadFile(String url,{void Function(double p)? progress}) async {
+ static Future<String> downloadFile(String url,{void Function(double p)? progress}) async {
     final directory =
         (await getDownloadsDirectory()) ??
         await getApplicationDocumentsDirectory();
