@@ -17,6 +17,7 @@ dependencies:
   path_provider: any
   crypto: any
   image: any
+  http: any
 
 
   url_launcher: any

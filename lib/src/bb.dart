@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' as wid;
 import 'package:flutter/painting.dart' as painting;
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:image/image.dart' as img;
@@ -306,8 +307,46 @@ class BB {
         ? ColorFilter.mode(color, BlendMode.srcIn)
         : null,
   );
-}
 
+ Future<String> downloadFile(String url,{void Function(double p)? progress}) async {
+    final directory =
+        (await getDownloadsDirectory()) ??
+        await getApplicationDocumentsDirectory();
+    final uri = Uri.parse(url);
+    final filename = uri.path.filename();
+    final file = File('${directory.path}/$filename');
+    try {
+      if (await file.exists()) return file.path;
+      final size = await file.length();
+      final output = file.openWrite();
+      final request = http.Request('GET', uri);
+      final response = await request.send();
+      await streamProgress(
+        response.stream,
+        progress: (done) {
+          progress?.call(done / size);
+        },
+      ).pipe(output);
+      return file.path;
+    } catch (error) {
+      await file.delete();
+      rethrow;
+    }
+  }}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+Stream<T> streamProgress<T extends List>(
+  Stream<T> source, {
+  void Function(int)? progress,
+}) async* {
+  int sum = 0;
+  await for (final chunk in source) {
+    sum += chunk.length;
+    progress?.call(sum);
+    yield chunk;
+  }
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 final Uint8List kTransparentImage = Uint8List.fromList(<int>[
