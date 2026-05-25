@@ -311,6 +311,7 @@ class BB {
   static Future<String> downloadFile(
     String url, {
     void Function(double p)? progress,
+    void Function(int lenght)? contentLength,
   }) async {
     final directory =
         (await getDownloadsDirectory()) ??
@@ -323,11 +324,13 @@ class BB {
       final output = file.openWrite();
       final request = http.Request('GET', uri);
       final response = await request.send();
-      final size = int.tryParse(response.headers['content-length'] ?? '') ?? 0;
+      final length =
+          int.tryParse(response.headers['content-length'] ?? '') ?? 0;
+      contentLength?.call(length);
       await streamProgress(
         response.stream,
         progress: (done) {
-          progress?.call(done / size);
+          progress?.call(done / length);
         },
       ).pipe(output);
       return file.path;
