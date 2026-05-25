@@ -308,7 +308,10 @@ class BB {
         : null,
   );
 
- static Future<String> downloadFile(String url,{void Function(double p)? progress}) async {
+  static Future<String> downloadFile(
+    String url, {
+    void Function(double p)? progress,
+  }) async {
     final directory =
         (await getDownloadsDirectory()) ??
         await getApplicationDocumentsDirectory();
@@ -317,10 +320,10 @@ class BB {
     final file = File('${directory.path}/$filename');
     try {
       if (await file.exists()) return file.path;
-      final size = await file.length();
       final output = file.openWrite();
       final request = http.Request('GET', uri);
       final response = await request.send();
+      final size = int.tryParse(response.headers['content-length'] ?? '') ?? 0;
       await streamProgress(
         response.stream,
         progress: (done) {
@@ -329,10 +332,13 @@ class BB {
       ).pipe(output);
       return file.path;
     } catch (error) {
-      await file.delete();
+      try {
+        await file.delete();
+      } catch (_) {}
       rethrow;
     }
-  }}
+  }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,6 +353,7 @@ Stream<T> streamProgress<T extends List>(
     yield chunk;
   }
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 final Uint8List kTransparentImage = Uint8List.fromList(<int>[
