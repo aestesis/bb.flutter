@@ -101,6 +101,25 @@ extension RectCropExt on Rect {
     );
   }
 
+  Rect extend({double aspect = 1}) {
+    final r = width / height;
+    if (aspect == r) {
+      return this;
+    }
+    if (aspect > r) {
+      return Rect.fromCenter(
+        center: center,
+        width: height * aspect,
+        height: height,
+      );
+    }
+    return Rect.fromCenter(
+      center: center,
+      width: width,
+      height: width / aspect,
+    );
+  }
+
   Rect reduce({double margin = 0}) {
     return Rect.fromLTRB(
       left + margin,
