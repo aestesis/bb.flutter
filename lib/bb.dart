@@ -6,3 +6,4 @@ export 'src/store.dart';
 export 'src/ui.dart';
 export 'src/ui.page.dart';
 export 'src/orbit.view.dart';
+export 'src/color.dart';
