@@ -175,3 +175,48 @@ extension UpdateStateExt<T extends StatefulWidget> on State<T> {
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+extension EdgeInsetsExt on EdgeInsets {
+  EdgeInsets keep(Iterable<Edge> edges) {
+    EdgeInsets a = EdgeInsets.all(0);
+    for (final e in edges) {
+      a += e.from(e.value(this));
+    }
+    return a;
+  }
+
+  EdgeInsets lose(Iterable<Edge> edges) {
+    EdgeInsets a = EdgeInsets.all(0);
+    final es = {...Edge.values}.where((e) => !edges.contains(e));
+    for (final e in es) {
+      a += e.from(e.value(this));
+    }
+    return a;
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+enum Edge {
+  top,
+  bottom,
+  left,
+  right;
+
+  EdgeInsets from(double value) => switch (this) {
+    Edge.top => EdgeInsets.only(top: value),
+    Edge.bottom => EdgeInsets.only(bottom: value),
+    Edge.left => EdgeInsets.only(left: value),
+    Edge.right => EdgeInsets.only(right: value),
+  };
+
+  double value(EdgeInsets e) => switch (this) {
+    Edge.top => e.top,
+    Edge.bottom => e.bottom,
+    Edge.left => e.left,
+    Edge.right => e.right,
+  };
+
+  static Set<Edge> get vertical => {.top, .bottom};
+  static Set<Edge> get horizontal => {.top, .bottom};
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
