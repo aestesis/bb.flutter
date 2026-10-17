@@ -18,7 +18,7 @@ dependencies:
   crypto: any
   image: any
   http: any
-
+  material_ui: any
 
   url_launcher: any
   shared_preferences: any
